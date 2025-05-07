@@ -2,9 +2,9 @@ from setuptools import setup
 
 setup(
     name="pyserve",
-    version="0.1",
+    version="1.0.0",
     packages=["pyserve"],
-    install_requires=[],
+    install_requires=["psutil"],
     entry_points={
         "console_scripts": [
             "pyserve=pyserve.main:start"

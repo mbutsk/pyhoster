@@ -86,6 +86,12 @@ def rm():
     if not os.path.exists(".pyserve"):
         print("Pyserve isn't installed in this directory")
         return
+    pid = config["pid"]
+
+    if psutil.pid_exists(pid):
+        os.kill(pid, signal.SIGTERM)
+        os.kill(pid + 1, signal.SIGTERM)
+
     os.remove(".pyserve")
     print("Pyserve removed succesfully")
 
