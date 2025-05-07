@@ -28,7 +28,7 @@ def question(text, post=None, **kwargs):
 items = {
     "rb": "Reboot app",
     "kill": "Kill app",
-    "start": "Start app",
+    "strt": "Start app",
     "rm": "Remove pyserve from app",
     "crt": "Create app",
 }
@@ -90,6 +90,17 @@ def rm():
     print("Pyserve removed succesfully")
 
 
+def strt():
+    process = subprocess.Popen(f"{config["pypath"]} -u {config["path"]} > {config["logfile"]} 2>&1",
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+    config["pid"] = process.pid
+
+    with open(".pyserve", 'w', encoding='utf-8') as cf:
+        json.dump(config, cf)
+    print("App started succesfully")
+
+
 def main():
     global config
     config = None
@@ -100,7 +111,7 @@ def main():
         if config["pid"]:
             menu = ["rb", "kill", "rm"]
         else:
-            menu = ["start", "rm"]
+            menu = ["strt", "rm"]
     else:
         menu = ["crt"]
 
