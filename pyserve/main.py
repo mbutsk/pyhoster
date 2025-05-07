@@ -2,6 +2,8 @@ import os
 import json
 from pathlib import Path
 import subprocess
+import psutil
+import signal
 
 def question(text, post=None, **kwargs):
     while True:
@@ -41,9 +43,22 @@ def crt():
     process = subprocess.Popen(f"{pypath} -u {path} > {logfile} 2>&1", stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     with open(".pyserve", 'w', encoding='utf-8') as cf:
-        json.dump({"pid": process.pid, "logfile": str(logfile), "pypath": pypath, "path": path}, cf)
+        json.dump({"pid": process.pid, "logfile": str(logfile), "pypath": pypath, "path": str(path)}, cf)
+
+def kill():
+    pid = config["pid"]
+    if not psutil.pid_exists(pid):
+        print("Process not found. Maybe app has been turned off")
+    else:
+        os.kill(pid, signal.SIGTERM)
+        os.kill(pid + 1, signal.SIGTERM)
+        print("Proccess killed succesfully")
+    config["pid"] = None
+    with open(".pyserve", "w", encoding='utf-8') as cf:
+        json.dump(config, cf)
 
 def main():
+    global config
     config = None
     if os.path.exists(".pyserve"):
         with open(".pyserve", "r", encoding="utf-8") as cf:
