@@ -1,0 +1,5 @@
+.pyserve
+build
+pyserve.egg-info
+__pycache__
+*.ignore
