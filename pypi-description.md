@@ -1,5 +1,7 @@
 # pyhoster
 
+[![AUR Version](https://img.shields.io/aur/version/pyhoster?style=for-the-badge&logo=arch%20linux&logoColor=white)](https://aur.archlinux.org/packages/pyhoster)
+
 pyhoster is a tool for those who host Python projects on their servers. It can reboot, kill processes, and more.
 
 ## Usage
