@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import json
 from pathlib import Path
@@ -141,3 +143,6 @@ def launch():
         main()
     except KeyboardInterrupt:
         exit()
+
+if __name__ == "__main__":
+    launch()
