@@ -78,7 +78,7 @@ def reboot():
         os.kill(pid, signal.SIGTERM)
         os.kill(pid + 1, signal.SIGTERM)
 
-    process = subprocess.Popen(f"{config["pypath"]} -u {config["path"]} > {config["logfile"]} 2>&1",
+    process = subprocess.Popen(f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     config["pid"] = process.pid
@@ -103,7 +103,7 @@ def rm():
 
 
 def start():
-    process = subprocess.Popen(f"{config["pypath"]} -u {config["path"]} > {config["logfile"]} 2>&1",
+    process = subprocess.Popen(f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     config["pid"] = process.pid
