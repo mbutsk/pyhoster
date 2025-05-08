@@ -1,6 +1,8 @@
-.pyserve
+.pyhoster
 build
-pyserve.egg-info
+.egg-info
 __pycache__
 *.ignore
 log.txt
+dist
+pyhoster.egg-info

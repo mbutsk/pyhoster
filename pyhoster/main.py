@@ -5,7 +5,11 @@ import subprocess
 import psutil
 import signal
 import argparse
+import platform
 
+if platform.system() == "Windows":
+    print("pyhoster does not support Windows")
+    exit()
 
 def choose(text, post=None, **kwargs):
     while True:
@@ -30,7 +34,7 @@ operations = {
     "reboot": "Reboot app",
     "kill": "Kill app",
     "start": "Start app",
-    "rm": "Remove pyserve from app",
+    "rm": "Remove pyhoster from app",
     "create": "Create app",
 }
 
@@ -49,7 +53,7 @@ def create():
     process = subprocess.Popen(f"{pypath} -u {path} > {logfile} 2>&1",
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
-    with open(".pyserve", 'w', encoding='utf-8') as cf:
+    with open(".pyhoster", 'w', encoding='utf-8') as cf:
         json.dump({"pid": process.pid, "logfile": str(logfile),
                   "pypath": pypath, "path": str(path)}, cf)
 
@@ -63,7 +67,7 @@ def kill():
         os.kill(pid + 1, signal.SIGTERM)
         print("App killed succesfully")
     config["pid"] = None
-    with open(".pyserve", "w", encoding='utf-8') as cf:
+    with open(".pyhoster", "w", encoding='utf-8') as cf:
         json.dump(config, cf)
 
 
@@ -78,14 +82,14 @@ def reboot():
 
     config["pid"] = process.pid
 
-    with open(".pyserve", 'w', encoding='utf-8') as cf:
+    with open(".pyhoster", 'w', encoding='utf-8') as cf:
         json.dump(config, cf)
     print("App rebooted succesfully")
 
 
 def rm():
-    if not os.path.exists(".pyserve"):
-        print("Pyserve isn't installed in this directory")
+    if not os.path.exists(".pyhoster"):
+        print("pyhoster isn't installed in this directory")
         return
     pid = config["pid"]
 
@@ -93,8 +97,8 @@ def rm():
         os.kill(pid, signal.SIGTERM)
         os.kill(pid + 1, signal.SIGTERM)
 
-    os.remove(".pyserve")
-    print("Pyserve removed succesfully")
+    os.remove(".pyhoster")
+    print("pyhoster removed succesfully")
 
 
 def start():
@@ -103,17 +107,17 @@ def start():
 
     config["pid"] = process.pid
 
-    with open(".pyserve", 'w', encoding='utf-8') as cf:
+    with open(".pyhoster", 'w', encoding='utf-8') as cf:
         json.dump(config, cf)
     print("App started succesfully")
 
 
 def main():
     global config
-    argparser = argparse.ArgumentParser(usage="Just write `pyserve` in root directory of your project", description="A simple tool for servers that host python projects")
+    argparser = argparse.ArgumentParser(usage="Just write `pyhoster` in root directory of your project", description="A simple tool for servers that host python projects")
     config = None
-    if os.path.exists(".pyserve"):
-        with open(".pyserve", "r", encoding="utf-8") as cf:
+    if os.path.exists(".pyhoster"):
+        with open(".pyhoster", "r", encoding="utf-8") as cf:
             config = json.load(cf)
 
         if config["pid"]:
