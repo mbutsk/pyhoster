@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import psutil
 import signal
+import argparse
 
 
 def choose(text, post=None, **kwargs):
@@ -25,7 +26,7 @@ def choose(text, post=None, **kwargs):
             return list(kwargs.keys())[choice - 1]
 
 
-items = {
+operations = {
     "reboot": "Reboot app",
     "kill": "Kill app",
     "start": "Start app",
@@ -109,6 +110,7 @@ def start():
 
 def main():
     global config
+    argparser = argparse.ArgumentParser(usage="Just write `pyserve` in root directory of your project", description="A simple tool for servers that host python projects")
     config = None
     if os.path.exists(".pyserve"):
         with open(".pyserve", "r", encoding="utf-8") as cf:
@@ -120,9 +122,14 @@ def main():
             menu = ["start", "rm"]
     else:
         menu = ["create"]
-
-    globals()[choose("What do you want to do?",
-                       "Press Ctrl+C to stop", **{i: items[i] for i in menu})]()
+    
+    argparser.add_argument("operation", choices=menu, help="run operation CLI (not TUI)", default=None, nargs='?')
+    args = argparser.parse_args()
+    if args.operation:
+        globals()[args.operation]()
+    else:
+        globals()[choose("What do you want to do?",
+                       "Press Ctrl+C to stop", **{i: operations[i] for i in menu})]()
 
 
 def launch():
