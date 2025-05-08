@@ -7,9 +7,8 @@ import subprocess
 import psutil
 import signal
 import argparse
-import platform
 
-if platform.system() == "Windows":
+if os.name == "nt":
     print("pyhoster does not support Windows")
     exit()
 
