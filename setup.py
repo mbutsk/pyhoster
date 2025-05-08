@@ -10,4 +10,5 @@ setup(
             "pyserve=pyserve.main:launch"
         ]
     },
+    data_files = [('share/man/man8', ['pyserve.8'])],
 )
