@@ -125,7 +125,7 @@ def main():
                        "Press Ctrl+C to stop", **{i: items[i] for i in menu})]()
 
 
-def start():
+def launch():
     try:
         main()
     except KeyboardInterrupt:

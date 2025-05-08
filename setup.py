@@ -7,7 +7,7 @@ setup(
     install_requires=["psutil"],
     entry_points={
         "console_scripts": [
-            "pyserve=pyserve.main:start"
+            "pyserve=pyserve.main:launch"
         ]
     },
 )
