@@ -6,7 +6,7 @@ import psutil
 import signal
 
 
-def question(text, post=None, **kwargs):
+def choose(text, post=None, **kwargs):
     while True:
         if len(kwargs) == 1:
             print(post)
@@ -17,28 +17,28 @@ def question(text, post=None, **kwargs):
         if post:
             print(post)
         try:
-            choose = int(input(f"Choose (1-{len(kwargs)}): "))
+            choice = int(input(f"Choose (1-{len(kwargs)}): "))
         except ValueError:
             continue
 
-        if len(kwargs) >= choose and choose != 0:
-            return list(kwargs.keys())[choose - 1]
+        if len(kwargs) >= choice and choice != 0:
+            return list(kwargs.keys())[choice - 1]
 
 
 items = {
-    "rb": "Reboot app",
+    "reboot": "Reboot app",
     "kill": "Kill app",
-    "strt": "Start app",
+    "start": "Start app",
     "rm": "Remove pyserve from app",
-    "crt": "Create app",
+    "create": "Create app",
 }
 
 
-def crt():
+def create():
     path = Path(input("Path to the Python executable file: ")).expanduser()
     if not path.exists():
         print("File not found")
-        crt()
+        create()
 
     logfile = Path(input("Log file path (log.txt): ")
                    or "log.txt").expanduser()
@@ -66,7 +66,7 @@ def kill():
         json.dump(config, cf)
 
 
-def rb():
+def reboot():
     pid = config["pid"]
     if psutil.pid_exists(pid):
         os.kill(pid, signal.SIGTERM)
@@ -96,7 +96,7 @@ def rm():
     print("Pyserve removed succesfully")
 
 
-def strt():
+def start():
     process = subprocess.Popen(f"{config["pypath"]} -u {config["path"]} > {config["logfile"]} 2>&1",
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
@@ -115,13 +115,13 @@ def main():
             config = json.load(cf)
 
         if config["pid"]:
-            menu = ["rb", "kill", "rm"]
+            menu = ["reboot", "kill", "rm"]
         else:
-            menu = ["strt", "rm"]
+            menu = ["start", "rm"]
     else:
-        menu = ["crt"]
+        menu = ["create"]
 
-    globals()[question("What do you want to do?",
+    globals()[choose("What do you want to do?",
                        "Press Ctrl+C to stop", **{i: items[i] for i in menu})]()
 
 
