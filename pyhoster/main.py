@@ -30,6 +30,11 @@ def choose(text, post=None, **kwargs):
         if len(kwargs) >= choice and choice != 0:
             return list(kwargs.keys())[choice - 1]
 
+def yn(text, y = True):
+    if y:
+        return input(f"{text} (Y/n)").lower() in ["y", "yes", "ok", ""]
+    else:
+        return input(f"{text} (y/N)").lower() not in ["y", "yes", "ok"]
 
 operations = {
     "reboot": "Reboot app",
@@ -37,6 +42,7 @@ operations = {
     "start": "Start app",
     "rm": "Remove pyhoster from app",
     "create": "Create app",
+    "configure": "Configure app"
 }
 
 
@@ -112,6 +118,31 @@ def start():
         json.dump(config, cf)
     print("App started succesfully")
 
+def configure():
+    path = Path(input(f"Path to the Python executable file ({config['path']}): ")
+                   or config['path']).expanduser()
+    
+    if not path.exists():
+        print("File not found")
+        configure()
+
+    logfile = Path(input(f"Log file path ({config['logfile']}): ")
+                   or config['logfile']).expanduser()
+
+    pypath = input(f"Python interpreter path ({config['pypath']}): ") or "python"
+
+    if str(path) == config['path'] and str(logfile) == config['logfile'] and str(pypath) == config['pypath']:
+        print("Nothing has changed")
+    else:
+        config['path'] = str(path)
+        config['logfile'] = str(logfile)
+        config['pypath'] = str(pypath)
+        with open('.pyhoster', 'w', encoding='utf-8') as fp:
+            json.dump(config, fp)
+        print("The settings have been successfully changed and will be applied after reboot.")
+        if config['pid'] and yn("Reboot now?"):
+            reboot()
+    
 
 def main():
     global config
@@ -122,9 +153,9 @@ def main():
             config = json.load(cf)
 
         if config["pid"]:
-            menu = ["reboot", "kill", "rm"]
+            menu = ["reboot", "kill", "rm", "configure"]
         else:
-            menu = ["start", "rm"]
+            menu = ["start", "rm", "configure"]
     else:
         menu = ["create"]
     
