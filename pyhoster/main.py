@@ -12,6 +12,7 @@ if os.name == "nt":
     print("pyhoster does not support Windows")
     exit()
 
+
 def choose(text, post=None, **kwargs):
     while True:
         if len(kwargs) == 1:
@@ -30,11 +31,13 @@ def choose(text, post=None, **kwargs):
         if len(kwargs) >= choice and choice != 0:
             return list(kwargs.keys())[choice - 1]
 
-def yn(text, y = True):
+
+def yn(text, y=True):
     if y:
         return input(f"{text} (Y/n)").lower() in ["y", "yes", "ok", ""]
     else:
         return input(f"{text} (y/N)").lower() not in ["y", "yes", "ok"]
+
 
 operations = {
     "reboot": "Reboot app",
@@ -118,10 +121,11 @@ def start():
         json.dump(config, cf)
     print("App started succesfully")
 
+
 def configure():
     path = Path(input(f"Path to the Python executable file ({config['path']}): ")
-                   or config['path']).expanduser()
-    
+                or config['path']).expanduser()
+
     if not path.exists():
         print("File not found")
         configure()
@@ -129,7 +133,8 @@ def configure():
     logfile = Path(input(f"Log file path ({config['logfile']}): ")
                    or config['logfile']).expanduser()
 
-    pypath = input(f"Python interpreter path ({config['pypath']}): ") or "python"
+    pypath = input(
+        f"Python interpreter path ({config['pypath']}): ") or "python"
 
     if str(path) == config['path'] and str(logfile) == config['logfile'] and str(pypath) == config['pypath']:
         print("Nothing has changed")
@@ -139,14 +144,16 @@ def configure():
         config['pypath'] = str(pypath)
         with open('.pyhoster', 'w', encoding='utf-8') as fp:
             json.dump(config, fp)
-        print("The settings have been successfully changed and will be applied after reboot.")
+        print(
+            "The settings have been successfully changed and will be applied after reboot.")
         if config['pid'] and yn("Reboot now?"):
             reboot()
-    
+
 
 def main():
     global config
-    argparser = argparse.ArgumentParser(usage="Just write `pyhoster` in root directory of your project", description="A simple tool for servers that host python projects")
+    argparser = argparse.ArgumentParser(usage="Just write `pyhoster` in root directory of your project",
+                                        description="A simple tool for servers that host python projects")
     config = None
     if os.path.exists(".pyhoster"):
         with open(".pyhoster", "r", encoding="utf-8") as cf:
@@ -158,14 +165,15 @@ def main():
             menu = ["start", "rm", "configure"]
     else:
         menu = ["create"]
-    
-    argparser.add_argument("operation", choices=menu, help="run operation CLI (not TUI)", default=None, nargs='?')
+
+    argparser.add_argument("operation", choices=menu,
+                           help="run operation CLI (not TUI)", default=None, nargs='?')
     args = argparser.parse_args()
     if args.operation:
         globals()[args.operation]()
     else:
         globals()[choose("What do you want to do?",
-                       "Press Ctrl+C to stop", **{i: operations[i] for i in menu})]()
+                         "Press Ctrl+C to stop", **{i: operations[i] for i in menu})]()
 
 
 def launch():
@@ -173,6 +181,7 @@ def launch():
         main()
     except KeyboardInterrupt:
         exit()
+
 
 if __name__ == "__main__":
     launch()
