@@ -11,9 +11,8 @@ def readme():
 
 setup(
     name="pyhoster",
-    version="1.0.3",
+    version="1.1.0",
     packages=find_packages(),
-    install_requires=["psutil"],
     entry_points={
         "console_scripts": [
             "pyhoster=pyhoster.main:launch"

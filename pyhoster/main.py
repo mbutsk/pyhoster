@@ -4,7 +4,6 @@ import os
 import json
 from pathlib import Path
 import subprocess
-import psutil
 import signal
 import argparse
 
@@ -70,7 +69,7 @@ def create():
 
 def kill():
     pid = config["pid"]
-    if not psutil.pid_exists(pid):
+    if not os.path.exists(f"/proc/{pid}"):
         print("Process not found. Maybe app has been turned off")
     else:
         os.kill(pid, signal.SIGTERM)
@@ -83,7 +82,7 @@ def kill():
 
 def reboot():
     pid = config["pid"]
-    if psutil.pid_exists(pid):
+    if os.path.exists(f"/proc/{pid}"):
         os.kill(pid, signal.SIGTERM)
         os.kill(pid + 1, signal.SIGTERM)
 
@@ -103,7 +102,7 @@ def rm():
         return
     pid = config["pid"]
 
-    if psutil.pid_exists(pid):
+    if os.path.exists(f"/proc/{pid}"):
         os.kill(pid, signal.SIGTERM)
         os.kill(pid + 1, signal.SIGTERM)
 
