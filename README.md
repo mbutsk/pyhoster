@@ -15,14 +15,6 @@ In the root directory of the project, write `pyhoster kill` to kill the process,
 
 ## Installation
 
-### Windows / MacOS
-
-The project is available on Pypi, so you can run:
-
-```bash
-pip install pyhoster
-```
-
 ### Arch Linux
 
 [![AUR Version](https://img.shields.io/aur/version/pyhoster?style=for-the-badge&logo=arch%20linux&logoColor=white)](https://aur.archlinux.org/packages/pyhoster)
@@ -33,7 +25,7 @@ If you use [yay](https://github.com/Jguer/yay) as an AUR helper, run
 yay -S pyhoster
 ```
 
-### MacOS / Windows / Linux
+### Other distros
 
 You can install pyhoster with [pipx](https://github.com/pypa/pipx). It downloads command-line programs using virtual environments.
 Just run:
