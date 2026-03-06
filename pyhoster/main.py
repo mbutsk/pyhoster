@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import os
-import json
-from pathlib import Path
-import subprocess
-import signal
 import argparse
+import json
+import os
+import signal
+import subprocess
+from pathlib import Path
 
 if os.name == "nt":
     print("pyhoster does not support Windows")
@@ -44,30 +44,49 @@ operations = {
     "start": "Start app",
     "rm": "Remove pyhoster from app",
     "create": "Create app",
-    "configure": "Configure app"
+    "configure": "Configure app",
 }
 
 
-def create():
+def create(config):
     path = Path(input("Path to the Python executable file: ")).expanduser()
     if not path.exists():
         print("File not found")
-        create()
+        create(config)
 
-    logfile = Path(input("Log file path (log.txt): ")
-                   or "log.txt").expanduser()
+    logfile = Path(
+        input("Log file path (log.txt): ") or "log.txt"
+    ).expanduser()
 
-    pypath = input("Python interpreter path (python): ") or "python"
+    if os.path.exists(".venv"):
+        pypath = ".venv/bin/python"
+    elif os.path.exists("venv"):
+        pypath = "venv/bin/python"
+    else:
+        pypath = "python"
 
-    process = subprocess.Popen(f"{pypath} -u {path} > {logfile} 2>&1",
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    pypath = input(f"Python interpreter path ({pypath}): ") or pypath
 
-    with open(".pyhoster", 'w', encoding='utf-8') as cf:
-        json.dump({"pid": process.pid, "logfile": str(logfile),
-                  "pypath": pypath, "path": str(path)}, cf)
+    process = subprocess.Popen(
+        f"{pypath} -u {path} > {logfile} 2>&1",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+    )
+
+    with open(".pyhoster", "w", encoding="utf-8") as cf:
+        json.dump(
+            {
+                "pid": process.pid,
+                "logfile": str(logfile),
+                "pypath": pypath,
+                "path": str(path),
+            },
+            cf,
+        )
 
 
-def kill():
+def kill(config):
     pid = config["pid"]
     if not os.path.exists(f"/proc/{pid}"):
         print("Process not found. Maybe app has been turned off")
@@ -76,27 +95,31 @@ def kill():
         os.kill(pid + 1, signal.SIGTERM)
         print("App killed succesfully")
     config["pid"] = None
-    with open(".pyhoster", "w", encoding='utf-8') as cf:
+    with open(".pyhoster", "w", encoding="utf-8") as cf:
         json.dump(config, cf)
 
 
-def reboot():
+def reboot(config):
     pid = config["pid"]
     if os.path.exists(f"/proc/{pid}"):
         os.kill(pid, signal.SIGTERM)
         os.kill(pid + 1, signal.SIGTERM)
 
-    process = subprocess.Popen(f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    process = subprocess.Popen(
+        f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+    )
 
     config["pid"] = process.pid
 
-    with open(".pyhoster", 'w', encoding='utf-8') as cf:
+    with open(".pyhoster", "w", encoding="utf-8") as cf:
         json.dump(config, cf)
     print("App rebooted succesfully")
 
 
-def rm():
+def rm(config):
     if not os.path.exists(".pyhoster"):
         print("pyhoster isn't installed in this directory")
         return
@@ -110,52 +133,68 @@ def rm():
     print("pyhoster removed succesfully")
 
 
-def start():
-    process = subprocess.Popen(f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+def start(config):
+    process = subprocess.Popen(
+        f"{config['pypath']} -u {config['path']} > {config['logfile']} 2>&1",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True,
+    )
 
     config["pid"] = process.pid
 
-    with open(".pyhoster", 'w', encoding='utf-8') as cf:
+    with open(".pyhoster", "w", encoding="utf-8") as cf:
         json.dump(config, cf)
     print("App started succesfully")
 
 
-def configure():
-    path = Path(input(f"Path to the Python executable file ({config['path']}): ")
-                or config['path']).expanduser()
+def configure(config):
+    path = Path(
+        input(f"Path to the Python executable file ({config['path']}): ")
+        or config["path"]
+    ).expanduser()
 
     if not path.exists():
         print("File not found")
-        configure()
+        configure(config)
 
-    logfile = Path(input(f"Log file path ({config['logfile']}): ")
-                   or config['logfile']).expanduser()
+    logfile = Path(
+        input(f"Log file path ({config['logfile']}): ") or config["logfile"]
+    ).expanduser()
 
-    pypath = input(
-        f"Python interpreter path ({config['pypath']}): ") or "python"
+    pypath = (
+        input(f"Python interpreter path ({config['pypath']}): ") or "python"
+    )
 
-    if str(path) == config['path'] and str(logfile) == config['logfile'] and str(pypath) == config['pypath']:
+    if (
+        str(path) == config["path"]
+        and str(logfile) == config["logfile"]
+        and str(pypath) == config["pypath"]
+    ):
         print("Nothing has changed")
     else:
-        config['path'] = str(path)
-        config['logfile'] = str(logfile)
-        config['pypath'] = str(pypath)
-        with open('.pyhoster', 'w', encoding='utf-8') as fp:
+        config["path"] = str(path)
+        config["logfile"] = str(logfile)
+        config["pypath"] = str(pypath)
+        with open(".pyhoster", "w", encoding="utf-8") as fp:
             json.dump(config, fp)
         print(
-            "The settings have been successfully changed and will be applied after reboot.")
-        if config['pid'] and yn("Reboot now?"):
-            reboot()
+            "The settings have been successfully changed \
+            and will be applied after rebooting."
+        )
+        if config["pid"] and yn("Reboot now?"):
+            reboot(config)
 
 
 def main():
     global config
-    argparser = argparse.ArgumentParser(usage="Just write `pyhoster` in root directory of your project",
-                                        description="A simple tool for servers that host python projects")
+    argparser = argparse.ArgumentParser(
+        usage="Just write `pyhoster` in root directory of your project",
+        description="A simple tool for servers that host python projects",
+    )
     config = None
     if os.path.exists(".pyhoster"):
-        with open(".pyhoster", "r", encoding="utf-8") as cf:
+        with open(".pyhoster", encoding="utf-8") as cf:
             config = json.load(cf)
 
         if config["pid"]:
@@ -165,14 +204,24 @@ def main():
     else:
         menu = ["create"]
 
-    argparser.add_argument("operation", choices=menu,
-                           help="run operation CLI (not TUI)", default=None, nargs='?')
+    argparser.add_argument(
+        "operation",
+        choices=menu,
+        help="run operation CLI (not TUI)",
+        default=None,
+        nargs="?",
+    )
     args = argparser.parse_args()
     if args.operation:
         globals()[args.operation]()
     else:
-        globals()[choose("What do you want to do?",
-                         "Press Ctrl+C to stop", **{i: operations[i] for i in menu})]()
+        globals()[
+            choose(
+                "What do you want to do?",
+                "Press Ctrl+C to stop",
+                **{i: operations[i] for i in menu},
+            )
+        ](config)
 
 
 def launch():

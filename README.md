@@ -1,6 +1,7 @@
 # pyhoster
 
-pyhoster is a tool for those who host Python projects on their servers. It can reboot, kill processes, and more.
+pyhoster is a tool for those who host Python projects on their servers.
+It can reboot, kill processes, and more.
 
 ## Usage
 
@@ -10,7 +11,8 @@ Just write pyhoster in the root directory of the project and follow the instruct
 
 ### CLI
 
-In the root directory of the project, write `pyhoster kill` to kill the process, `pyhoster reboot` to reboot, etc.
+In the root directory of the project, write `pyhoster kill` to kill the process,
+`pyhoster reboot` to reboot, etc.
 `pyhoster -h` / `pyhoster --help` for full list available commands in moment
 
 ## Installation
@@ -27,7 +29,8 @@ yay -S pyhoster
 
 ### Other distros
 
-You can install pyhoster with [pipx](https://github.com/pypa/pipx). It downloads command-line programs using virtual environments.
+You can install pyhoster with [pipx](https://github.com/pypa/pipx).
+It downloads command-line programs using virtual environments.
 Just run:
 
 ```bash

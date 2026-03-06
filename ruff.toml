@@ -1,0 +1,25 @@
+include = [
+  "**.py",
+  "ruff.toml"
+]
+fix = true
+line-length = 79
+indent-width = 4
+target-version = "py39"
+
+[lint]
+select = [
+  "E",
+  "F",
+  "B",
+  "I",
+  "UP",
+  "SIM",
+  "ASYNC"
+]
+
+fixable = ["ALL"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
