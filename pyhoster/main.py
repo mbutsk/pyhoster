@@ -67,6 +67,8 @@ def create(config):
 
     pypath = input(f"Python interpreter path ({pypath}): ") or pypath
 
+    autostart = yn("Autostart on boot", y=False)
+
     process = subprocess.Popen(
         f"{pypath} -u {path} > {logfile} 2>&1",
         stdout=subprocess.PIPE,
@@ -84,6 +86,15 @@ def create(config):
             },
             cf,
         )
+
+    if autostart:
+        with open("/etc/pyhoster/autostart.json") as fs:
+            autostart_entries: list = json.load(fs)
+        with open("/etc/pyhoster/autostart.json", "w") as fs:
+            autostart_entries.append(
+                {"logfile": str(logfile), "pypath": pypath, "path": str(path)}
+            )
+            json.dump(autostart_entries, fs)
 
 
 def kill(config):
