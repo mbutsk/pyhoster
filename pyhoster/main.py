@@ -213,7 +213,7 @@ def main():
     )
     args = argparser.parse_args()
     if args.operation:
-        globals()[args.operation]()
+        globals()[args.operation](config)
     else:
         globals()[
             choose(

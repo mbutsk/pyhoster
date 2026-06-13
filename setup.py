@@ -11,7 +11,7 @@ def readme():
 
 setup(
     name="pyhoster",
-    version="1.1.1",
+    version="1.1.2",
     packages=find_packages(),
     entry_points={"console_scripts": ["pyhoster=pyhoster.main:launch"]},
     data_files=[("share/man/man8", ["pyhoster.8"])],
